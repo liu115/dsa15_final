@@ -1,17 +1,34 @@
 # DSA_final
+---------------------
+CONTENTS OF THIS REPO
+---------------------
+ * Introduction
+ * Files
+--------
 
-This repository will include the final project of DSA.
-Both source code and the report. 
-BUT WITHOUT BINARY FILE.
+------------
+INTRODUCTION
+------------
+This repository is the final project of DSA for team 'em pleh esaelp'.
+----------------------------------------------------------------------
+
+-------
+FILE
+-------
+This repo will include:
+ * Source Codes
+ * report.pdf
+Caution: NO BINARY FILEs
 
 The report.pdf shoud include:
-	(1) the team members’ names and school IDs
-	(2) how you divide the responsibilities of the team members
-	(3) the data structures you compared, including the results submitted to the mini-competition site
-	(4) the data structure you recommend
-	(5) the advantages of the recommendation
-	(6) the disadvantages of the recommendation
-	(7) how to compile your code and use the system
-	(8) the bonus features you implement and why you think they deserve the bonus
-
+ * the team members’ names and school IDs
+ * how you divide the responsibilities of the team members
+ * the data structures you compared, including the results submitted to the mini-competition site
+ * the data structure you recommend
+ * the advantages of the recommendation
+ * the disadvantages of the recommendation
+ * how to compile your code and use the system
+ * the bonus features you implement and why you think they deserve the bonus
+--------------------------------
 Hope that everyone can have fun.
+--------------------------------
