@@ -1,0 +1,6 @@
+# Compiled Object
+*.o
+# Executables
+*.out
+# Misc
+.DS_Store
