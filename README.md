@@ -1,12 +1,12 @@
 # DSA_final
 ---------------------
+
 CONTENTS OF THIS REPO
 ---------------------
  * Introduction
  * Files
---------
 
-------------
+
 INTRODUCTION
 ------------
 This repository is the final project of DSA for team 'em pleh esaelp'.
@@ -29,6 +29,7 @@ The report.pdf shoud include:
  * the disadvantages of the recommendation
  * how to compile your code and use the system
  * the bonus features you implement and why you think they deserve the bonus
---------------------------------
-Hope that everyone can have fun.
---------------------------------
+
+===============================
+Hope that everyone can have fun!
+
