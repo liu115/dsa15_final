@@ -4,3 +4,5 @@
 *.out
 # Misc
 .DS_Store
+# ignore all test file, which name start with test, like test*
+test*
