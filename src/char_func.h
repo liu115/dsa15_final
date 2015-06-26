@@ -16,4 +16,3 @@ char next_char(const char& c) {
 }
 
 #endif // SRC_CHAR_FUNC_H_
-
