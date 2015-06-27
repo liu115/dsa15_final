@@ -1,9 +1,9 @@
-// regex_change.h
+// regex_translate.h
 // Copyright 2015-06 dsa_final15
-// it use for change the wildcard_ID in command "find" become regular expression
+// it use for translate the wildcard_ID in command "find" become regular expression
 
-//#ifndef SRC_REGEX_CHANGE_H_
-//#define SRC_REGEX_CHANGE_H_
+//#ifndef SRC_REGEX_TRANSLATE_H_
+//#define SRC_REGEX_TRANSLATE_H_
 
 #include <iostream>
 #include <string>
