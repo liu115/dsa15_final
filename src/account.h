@@ -8,45 +8,27 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include "md5.h"
+#include "sha256.h"
 
 #define FROM true
 #define TO false
 
 class Account {
  public:
-  Account(const std::string& s1, const std::string& s2): \
-  _id(s1), _passwd(s2), _deposit(0) {}
+  Account(const std::string& s1, const std::string& s2): _balance(0), isLogin(0), _id(s1) {
+    _passwd_md5 = md5(s2);
+    _passwd_sha = sha256(s2);
+  }
   ~Account() {}
 
-  // test function
-  void show() {
-    std::cout << "id = " << _id << std::endl;
-    std::cout << "deposit = " << _deposit << std::endl;
-    for (int i=0; i < _log.size(); ++i) {
-      std::cout << ((_log[i].isFrom)?"From":"To") \
-      << " " << _log[i].id << " " << _log[i].amount << std::endl;
-    }
-  }
-  void deposit(const int& money) {
-    _deposit += money;
-  }
-  int transferOut(const std::string id, const int& money) {
-    _deposit -= money;
-    logNode new_node(TO, money, id);
-    _log.push_back(new_node);
-    return 0;
-  }
-  int transferIn(const std::string id, const int& money) {
-    _deposit += money;
-    logNode new_node(FROM, money, id);
-    _log.push_back(new_node);
-    return 0;
-  }
-  void merge(const Account& b) {
-    _deposit += b._deposit;
-    _log.insert(_log.end(), b._log.begin(), b._log.end());
-    b._log.clear();
-  }
+  void show();
+  void login(const std::string& passwd);
+  bool verifyPassword(const std::string& passwd);
+  void depositMoney(const int& money);
+  int transferOut(const std::string id, const int& t, const int& money);
+  int transferIn(const std::string id, const int& t, const int& money);
+  void merge(Account& b);
 
  private:
   // logNode is used to record transfer history
@@ -54,12 +36,16 @@ class Account {
     std::string id;
     int amount;
     bool isFrom;
-    logNode(const bool b, const int i, const std::string s): \
-    isFrom(b), amount(i), id(s) {}
+    int time_record;
+    logNode(const bool b, const int i, const int t, const std::string s): \
+    id(s), amount(i), isFrom(b), time_record(t) {}
   };
+
+  int _balance;
+  bool isLogin;
   std::string _id;
-  std::string _passwd;
-  int _deposit;
+  std::string _passwd_md5;
+  std::string _passwd_sha;
   std::vector<logNode> _log;
 };
 

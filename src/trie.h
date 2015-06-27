@@ -1,5 +1,5 @@
 // trie.h
-// Copyright <em pleh esaelp> 2015-06
+// Copyright 2015-06 dsa_final15
 
 #ifndef SRC_TRIE_H_
 #define SRC_TRIE_H_
@@ -83,4 +83,3 @@ class Trie {
 };
 
 #endif // SRC_TRIE_H_
-
