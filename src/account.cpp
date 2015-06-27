@@ -2,44 +2,98 @@
 // Copyright 2015-06 dsa_final15
 
 #include "account.h"
-
-void Account::show() {
-	std::cout << "id = " << _id << std::endl;
-	std::cout << "deposit = " << _balance << std::endl;
-	for (int i=0; i < _log.size(); ++i) {
-	  std::cout << ((_log[i].isFrom)?"From":"To") \
-	  << " " << _log[i].id << " " << _log[i].amount << std::endl;
-	}
-}
-
-void Account::login(const std::string& passwd){
-	isLogin = verifyPassword(passwd);
-}
+#include "transfer_log.h"
 
 bool Account::verifyPassword(const std::string& passwd) {
-	return (md5(passwd) == _passwd_md5) && (sha256(passwd) == _passwd_sha);
+  return (md5(passwd) == _passwd_md5) && (sha256(passwd) == _passwd_sha);
 }
 
 void Account::depositMoney(const int& money) {
-	_balance += money;
+  _balance += money;
 }
 
-int Account::transferOut(const std::string id, const int& t, const int& money) {
-	_balance -= money;
-	Account::logNode new_node(TO, money, t, id);
-	_log.push_back(new_node);
-	return 0;
+void Account::withdrawMoney(const int& money) {
+  if (_balance < money)
+    return;
+  _balance -= money;
 }
 
-int Account::transferIn(const std::string id, const int& t, const int& money) {
-	_balance += money;
-	Account::logNode new_node(FROM, money, t, id);
-	_log.push_back(new_node);
-	return 0;
+void Account::transferOut(Account& b, const int& money, TransferLog& lg) {
+  // the things giver does
+  if (_balance < money)
+    return;
+  _balance -= money;
+
+  // the things receiver does;
+  b._balance += money;
+
+  // add new transfer log
+  lg.addLog(_id, b._id, money);
+  _log.push_back((lg.getCurrPos())->pre); // TO transfer record
+  b._log.push_back(lg.getCurrPos()); // FROM transfer record
 }
 
-void Account::merge(Account& b) {
-	_balance += b._balance;
-	_log.insert(_log.end(), b._log.begin(), b._log.end());
-	b._log.clear();
+void Account::printHistory() {
+  std::vector<logNode*>::iterator it;
+  for (it = _log.begin(); it != _log.end(); ++it) {
+    if ((*it)->isFrom)
+      std::cout << (*it)->time_record << " FROM " << (*it)->id << " " << (*it)->amount << "\n";
+    else
+      std::cout << (*it)->time_record << " TO " << (*it)->id << " " << (*it)->amount << "\n";
+  }
+}
+
+void Account::searchHistory(const string& id) {
+  std::vector<logNode*>::iterator it;
+  for (it = _log.begin(); it != _log.end(); ++it) {
+    if ((*it)->id == id) {
+      if ((*it)->isFrom)
+        std::cout << "FROM " << (*it)->id << " " << (*it)->amount << "\n";
+      else
+        std::cout << "TO " << (*it)->id << " " << (*it)->amount << "\n";
+    }
+  }
+}
+
+void Account::mergeAccount(Account& b) {
+  _balance += b._balance;
+
+  std::vector<logNode*> new_log;
+  new_log.reserve(_log.size() + b._log.size());
+
+  std::vector<logNode*>::iterator it_a = _log.begin();
+  std::vector<logNode*>::iterator it_b = b._log.begin();
+
+  while (it_a != _log.end() && it_b != b._log.end()) {
+    if ((*it_a)->time_record <= (*it_b)->time_record) {
+      new_log.push_back(*it_a);
+      it_a++;
+    } else {
+      new_log.push_back(*it_b);
+      if ((*it_b)->isFrom)
+        (*it_b)->pre->id = _id;
+      else
+        (*it_b)->next->id = _id;
+      it_b++;
+    }
+  }
+
+  if (it_b != b._log.end()) {
+    for (it_b; it_b != b._log.end(); ++it_b) {
+      new_log.push_back(*it_b);
+      if ((*it_b)->isFrom)
+        (*it_b)->pre->id = _id;
+      else
+        (*it_b)->next->id = _id;
+    }
+  } else {
+    new_log.insert(new_log.end(), it_a, _log.end());
+  }
+
+  _log = new_log;
+}
+
+void Account::show() {
+  std::cout << "_id=" << _id << "\n";
+  std::cout << "_balance=" << _balance << "\n";
 }
