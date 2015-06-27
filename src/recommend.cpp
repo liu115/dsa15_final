@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 #include "recommend.h"
 #include "char_func.h"
@@ -38,6 +39,7 @@ void getRecommend(string& oid, RecommendId& rid) {
     }
     degree++;
   }
+  sort(rid.begin(), rid.end());
 }
 
 /*
