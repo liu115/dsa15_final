@@ -8,8 +8,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include "md5.h"
-#include "sha256.h"
+#include "encoder/md5.h"
+#include "encoder/sha256.h"
 #include "transfer_log.h"
 
 class Account {

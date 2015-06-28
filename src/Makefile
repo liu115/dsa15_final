@@ -4,16 +4,16 @@
 CC=g++
 CFLAGS=-std=c++11 -O2 -Wall
 
-TAR_ACCOUNT=account.cpp
+TAR_ACCOUNT=account/account.cpp
 OBJ_ACCOUNT=account.o
 
-TAR_MD5=md5.cpp
+TAR_MD5=account/encoder/md5.cpp
 OBJ_MD5=md5.o
 
-TAR_SHA=sha256.cpp
+TAR_SHA=account/encoder/sha256.cpp
 OBJ_SHA=sha256.o
 
-TAR_HASH=MurmurHash3.cpp
+TAR_HASH=account/MurmurHash3.cpp
 OBJ_HASH=MurmurHash3.o
 
 all: $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(OBJ_HASH)
