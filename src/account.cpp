@@ -10,49 +10,64 @@ bool Account::verifyPassword(const std::string& passwd) {
 
 void Account::depositMoney(const int& money) {
   _balance += money;
+  std::cout << "success, " << _balance << " dollars in current account\n";
 }
 
 void Account::withdrawMoney(const int& money) {
   if (_balance < money)
-    return;
-  _balance -= money;
+    std::cout << "fail, " << _balance << " dollars only in current account\n";
+  else {
+    _balance -= money;
+    std::cout << "success, " << _balance << " left in current account\n";
+  }
 }
 
 void Account::transferOut(Account& b, const int& money, TransferLog& lg) {
-  // the things giver does
-  if (_balance < money)
+  // check whether the balance is enough or not
+  if (_balance < money) {
+    std::cout << "fail, " << _balance << " dollars only in current account\n";
     return;
-  _balance -= money;
+  }
 
-  // the things receiver does;
+  // if current balance is enough
+  _balance -= money;
   b._balance += money;
 
   // add new transfer log
   lg.addLog(_id, b._id, money);
   _log.push_back((lg.getCurrPos())->pre); // TO transfer record
   b._log.push_back(lg.getCurrPos()); // FROM transfer record
+
+  std::cout << "success, " << _balance << " dollars left in current account\n";
 }
 
+// This is used for checking transfer history, not really used in program
 void Account::printHistory() {
   std::vector<logNode*>::iterator it;
   for (it = _log.begin(); it != _log.end(); ++it) {
     if ((*it)->isFrom)
-      std::cout << (*it)->time_record << " FROM " << (*it)->id << " " << (*it)->amount << "\n";
+      std::cout << (*it)->time_record << " From " << (*it)->id << " " << (*it)->amount << "\n";
     else
-      std::cout << (*it)->time_record << " TO " << (*it)->id << " " << (*it)->amount << "\n";
+      std::cout << (*it)->time_record << " To " << (*it)->id << " " << (*it)->amount << "\n";
   }
 }
 
 void Account::searchHistory(const string& id) {
+  bool no_record = true;
   std::vector<logNode*>::iterator it;
   for (it = _log.begin(); it != _log.end(); ++it) {
     if ((*it)->id == id) {
+      if (no_record)
+        no_record = false;
+
       if ((*it)->isFrom)
-        std::cout << "FROM " << (*it)->id << " " << (*it)->amount << "\n";
+        std::cout << "From " << (*it)->id << " " << (*it)->amount << "\n";
       else
-        std::cout << "TO " << (*it)->id << " " << (*it)->amount << "\n";
+        std::cout << "To " << (*it)->id << " " << (*it)->amount << "\n";
     }
   }
+  if (no_record)
+    std::cout << "no record\n";
 }
 
 void Account::mergeAccount(Account& b) {
@@ -91,6 +106,8 @@ void Account::mergeAccount(Account& b) {
   }
 
   _log = new_log;
+
+  std::cout << "success, " << _id << " has " << _balance << " dollars\n";
 }
 
 void Account::show() {

@@ -19,14 +19,24 @@ class Account {
     _passwd_sha = sha256(s2);
   }
   ~Account() {}
-
+ 
+  // some steps need to verify password first
+  // please do verifyPassword() first  
   bool verifyPassword(const std::string& passwd);
+
+  // operations no bound to last-successfully-login-account
+  void mergeAccount(Account& b);
+
+  // operations bound to last-successfully-login-account
   void depositMoney(const int& money);
   void withdrawMoney(const int& money);
+  // when use transfer, please check that ID is exist or not first
   void transferOut(Account& b, const int& money, TransferLog& lg);
-  void printHistory();
+  // when use search, please check that searched ID is exist or not first
   void searchHistory(const string& id);
-  void mergeAccount(Account& b);
+
+  // these two is for debugging
+  void printHistory();
   void show();
 
  private:
