@@ -13,12 +13,14 @@
 using namespace std;
 int max_num(const int a, const int b) { return (a < b)?b:a;}
 int min_num(const int a, const int b) { return (a < b)?a:b;}
+int abs_num(const int a) { return (a < 0)?-a:a;}
 int scoring(string& str1, string& str2) {
   int score = 0, min_len = min_num(str1.length(), str2.length());
   for (int i = 0; i < min_len; i++) {
     if(str1[i] != str2[i]) score += (min_len - i);
   }
-  score += (str1.length() - min_len) + (str2.length() - min_len);
+  int delta = abs((int)(str1.length() - str2.length()));
+  score += delta * (delta + 1) / 2;
   return score;
 }
 
@@ -60,34 +62,39 @@ void runRecommend(string id, string oid, int len, RecommendId& rid, int degree_c
   
   if (degree_c == 0 && degree_a == 0) {
     //if id it's ok (no same id)
+      //cout << id << " " << scoring(id, oid) << '\n';
       rid.push_back(id);
       return;
   }
   string tmpid;
-  if (degree_c > 0) {
-    for (int i = max_num(oid.length() - degree_c, len); i < min_num(oid.length(), id.length()); i++) {
-      for (char c = '0'; c <= 'z'; c = next_char(c)) {
-        if (c != oid[i]) {
-          tmpid = id;
-          tmpid[i] = c;
-          runRecommend(tmpid, oid, i + 1, rid, degree_c - (oid.length() - i), degree_a);
-        }
-        if (c == 'z') break;
-      }
-    }
-  }
-  if (degree_a > 0) {
+  int delta = abs((int)oid.length() - (int)id.length());
+  if (degree_a > delta) {
     if (id.length() >= oid.length() && id.length() < MAX_STRING_SIZE) {
       for (char c = '0'; ; c = next_char(c)) {
-        runRecommend(id + c, id, len, rid, degree_c, degree_a - 1);
+        runRecommend(id + c, oid, id.length() + 1, rid, degree_c, degree_a - delta - 1);
         if (c == 'z') break;
       }
     }
     if (id.length() <= oid.length() && id.length() > len && id.length() > 1) {
       tmpid = id;
       tmpid.pop_back();
-      runRecommend(tmpid, id, len, rid, degree_c, degree_a - 1);
+      runRecommend(tmpid, oid, len, rid, degree_c, degree_a - delta - 1);
     }
   }
+  if (degree_c > 0) {
+    for (int i = max_num(min(id.length(), oid.length()) - degree_c, len); i < min_num(oid.length(), id.length()); i++) {
+      if (degree_c >= min(oid.length(), id.length()) - i) {
+        for (char c = '0'; c <= 'z'; c = next_char(c)) {
+          if (c != oid[i]) {
+          tmpid = id;
+          tmpid[i] = c;
+          runRecommend(tmpid, oid, i + 1, rid, degree_c - (min(oid.length(), id.length()) - i), degree_a);
+          }
+          if (c == 'z') break;
+        }
+      }
+    }
+  }
+  
 }
 
