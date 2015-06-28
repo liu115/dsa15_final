@@ -16,10 +16,10 @@ OBJ_SHA=sha256.o
 TAR_HASH=account/MurmurHash3.cpp
 OBJ_HASH=MurmurHash3.o
 
-all: $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(OBJ_HASH)
+TAR_BANK_UMAP=bank_unordered_map.cpp
+OBJ_BANK_UMAP=bank_unordered_map.o
 
-$(OBJ_ACCOUNT): $(TAR_ACCOUNT)
-	$(CC) $(CFLAGS) -c $(TAR_ACCOUNT)
+all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP)
 
 $(OBJ_MD5): $(TAR_MD5)
 	$(CC) $(CFLAGS) -c $(TAR_MD5)
@@ -27,8 +27,11 @@ $(OBJ_MD5): $(TAR_MD5)
 $(OBJ_SHA): $(TAR_SHA)
 	$(CC) $(CFLAGS) -c $(TAR_SHA)
 
-$(OBJ_HASH): $(TAR_HASH)
-	$(CC) $(CFLAGS) -c $(TAR_HASH)
+$(OBJ_ACCOUNT): $(TAR_ACCOUNT)
+	$(CC) $(CFLAGS) -c $(TAR_ACCOUNT)
+
+$(OBJ_BANK_UMAP): $(TAR_BANK_UMAP)
+	$(CC) $(CFLAGS) -c $(TAR_BANK_UMAP)
 
 clean:
-	rm -rf account.o md5.o sha256.o MurmurHash3.o
+	rm -rf account.o md5.o sha256.o bank_unordered_map.o
