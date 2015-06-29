@@ -13,7 +13,7 @@
   // #include "bank_unordered_map.h"
 #endif
 
-using namespace std;
+using std::cin;
 
 
 int main(){
