@@ -20,7 +20,6 @@ TAR_BANK_UMAP=bank_unordered_map.cpp
 OBJ_BANK_UMAP=bank_unordered_map.o
 
 TAR_BANK1=main.cpp
-OBJ_BANK1=bank_um.out
 
 all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP)
 
@@ -36,7 +35,7 @@ $(OBJ_ACCOUNT): $(TAR_ACCOUNT)
 $(OBJ_BANK_UMAP): $(TAR_BANK_UMAP)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_UMAP)
 
-$(OBJ_BANK1): $(TAR_BANK1)
+bank1: $(TAR_BANK1)
 	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(TAR_BANK1) -o bank_um.out
 
 clean:
