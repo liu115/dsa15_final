@@ -32,16 +32,16 @@ rid: id strings of recommendations
 */
 void getRecommend(string& oid, RecommendId& rid) {
   rid.clear();
-  int degree = 1;
+  int degree = 1, new_size = 0;
   while (rid.size() < RECOMMEND_SIZE) {
-    
     for (int i = 0; i <= degree; i++) {
-      if (rid.size() >= RECOMMEND_SIZE) break;
       runRecommend(oid, oid, 0, rid, i, degree - i);
     }
+    sort(rid.begin() + new_size, rid.end());
+    new_size = rid.size();
+    if (rid.size() >= RECOMMEND_SIZE) break;
     degree++;
   }
-  sort(rid.begin(), rid.end());
 }
 
 /*
@@ -56,13 +56,8 @@ degree_a: degree to add suffix string, or delete suffix
 */
 
 void runRecommend(string id, string oid, int len, RecommendId& rid, int degree_c, int degree_a) {
-  if (rid.size() >= RECOMMEND_SIZE) {
-    return;
-  }
-  
   if (degree_c == 0 && degree_a == 0) {
     //if id it's ok (no same id)
-      //cout << id << " " << scoring(id, oid) << '\n';
       rid.push_back(id);
       return;
   }
