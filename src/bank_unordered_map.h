@@ -15,7 +15,7 @@ typedef unordered_map<std::string, Account> UMap;
 
 class BankUMap {
  public:
-  BankUMap(): current_login_user(0), umap(), lg() {}
+  BankUMap(): lg() {}
   ~BankUMap() {}
 
   void loginAccount(const string& id, const string& passwd);
