@@ -2,7 +2,16 @@
 #include <cstdio>
 #include <cstring>
 #include <iostream>
-#include "bank_unordered_map.h"
+
+#if defined(BANK_UM)
+  #include "bank_unordered_map.h"
+#elif defined(BANK_RB)
+  // #include "bank_rb_tree.h"
+#elif defined(BANK_TR)
+  // #include "bank_trie.h"
+#else
+  // #include "bank_unordered_map.h"
+#endif
 
 using namespace std;
 
@@ -13,7 +22,15 @@ int main(){
 	int money;
 	std::ios::sync_with_stdio(false);
 
-	BankUMap bank;
+	#if defined(BANK_UM)
+		BankUMap bank;
+	#elif defined(BANK_RB)
+		// BankRBTree bank;
+	#elif defined(BANK_TR)
+		// BankTrie bank;
+	#else
+		// BankUMap bank;
+	#endif
 
 	while(cin >> command){
 
