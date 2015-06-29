@@ -19,9 +19,15 @@ OBJ_HASH=MurmurHash3.o
 TAR_BANK_UMAP=bank_unordered_map.cpp
 OBJ_BANK_UMAP=bank_unordered_map.o
 
-TAR_BANK1=main.cpp
+TAR_BANK_RBT=bank_rb_tree.cpp
+OBJ_BANK_RBT=bank_rb_tree.o
 
-all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP)
+TAR_BANK_TRIE=bank_trie.cpp
+OBJ_BANK_TRIE=bank_trie.o
+
+MAIN=main.cpp
+
+all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP) $(OBJ_BANK_RBT)
 
 $(OBJ_MD5): $(TAR_MD5)
 	$(CC) $(CFLAGS) -c $(TAR_MD5)
@@ -35,8 +41,29 @@ $(OBJ_ACCOUNT): $(TAR_ACCOUNT)
 $(OBJ_BANK_UMAP): $(TAR_BANK_UMAP)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_UMAP)
 
-bank1: $(TAR_BANK1)
-	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(TAR_BANK1) -o bank_um.out
+$(OBJ_BANK_RBT): $(TAR_BANK_RBT)
+	$(CC) $(CFLAGS) -c $(TAR_BANK_RBT)
+
+$(OBJ_BANK_TRIE): $(TAR_BANK_TRIE)
+	$(CC) $(CFLAGS) -c $(TAR_BANK_TRIE)
+
+bank1: $(MAIN)
+	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_um.out
+
+bank2: $(MAIN)
+	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_rb.out
+
+bank3: $(MAIN)
+	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_tr.out
+
+run1:
+	./bank_um.out
+
+run2:
+	./bank_rb.out
+
+run3:
+	./bank_tr.out
 
 clean:
 	rm -rf account.o md5.o sha256.o bank_unordered_map.o bank_um.out
