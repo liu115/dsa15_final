@@ -2,8 +2,13 @@
 //Copyright 2015-6 dsa_final15
 
 #include "bank_rb_tree.h"
-extern "C"{
-	#include "rb.h"
+int word_compare(const void *pa, const void *pb, void *param){
+	const DataNode *a = ((const DataNode *)pa);
+	const DataNode *b = ((const DataNode *)pb);
+
+	if (a->first->compare(*(b->first)) < 0) return -1;
+	else if (a->first->compare(*(b->first)) > 0) return +1; 
+	else return 0;
 }
 
 
