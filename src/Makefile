@@ -49,13 +49,13 @@ $(OBJ_BANK_RBT): $(TAR_BANK_RBT)
 $(OBJ_BANK_TRIE): $(TAR_BANK_TRIE)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_TRIE)
 
-bank1: $(MAIN)
+bank1: $(MAIN) $(OBJ_BANK_UMAP)
 	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank2: $(MAIN)
+bank2: $(MAIN) $(OBJ_BANK_RBT)
 	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank3: $(MAIN)
+bank3: $(MAIN) $(OBJ_BANK_TRIE)
 	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
 $(RESULT): $(MAIN)
