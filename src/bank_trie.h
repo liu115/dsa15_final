@@ -72,6 +72,7 @@ class BankTrie {
     }
   }
   void regexFind(const string &reg, RegString &rs) {
+    tree.reg_cnt++;
     tree.regFind(tree.root, 0, reg, 0, rs);
   }
 };

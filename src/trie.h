@@ -13,6 +13,7 @@ template<class T>
 class Trie {
  private:
   int size;
+  
   int map_key(const char& c) {
     int mp = (int)c - 48; // mapping 0 - 9
     if (mp > 16) mp -= 7; // mapping A - Z
@@ -28,14 +29,16 @@ class Trie {
   }
   
  public:
+  int reg_cnt;
   struct trie_node {
     T *element;
     const string &str;
     int begin, end;
+    int reg_flag;         //for regFind to know that this node has been taken
     trie_node *parent;
     trie_node *child[TREE_WIDTH];
     trie_node(T *ele, const string &_str, int b, int e): \
-      element(ele), str(_str), begin(b), end(e) {
+      element(ele), str(_str), begin(b), end(e), reg_flag(0) {
         for (int i = 0; i < TREE_WIDTH; i++) {
           child[i] = NULL;
         }
@@ -46,7 +49,7 @@ class Trie {
     return node->child[map_key(c)];
   }
   
-  Trie() {
+  Trie(): reg_cnt(0) {
     size = 0;
     string *empty = new string("");
     root = new trie_node(NULL, *empty, 0, 0); //root->element = NULL
@@ -220,10 +223,9 @@ class Trie {
     if (node_index == node->end && now == reg.length() && node && node->element) {
       string tmpid;
       tmpid.assign(node->str, 0, node->end + 1);
-      for (int i = 0; i < rs.size(); i++) {
-        if (rs[i] == tmpid) return;
-      }
+      if (node->reg_flag == reg_cnt) return;
       rs.push_back(tmpid);
+      node->reg_flag = reg_cnt;
       return;
     }
     if (reg[now] == '*') {
