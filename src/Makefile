@@ -35,7 +35,7 @@ MAIN=main.cpp
 
 RESULT=final_project
 
-all: obj bank1
+all: bank1
 
 obj: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT)
 
@@ -63,16 +63,16 @@ $(OBJ_BANK_TRIE): $(TAR_BANK_TRIE)
 $(OBJ_BANK_MUR): $(TAR_BANK_MUR)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_MUR)
 
-bank1: $(MAIN) $(OBJ_BANK_UMAP)
+bank1: $(MAIN) $(OBJ_BANK_UMAP) obj
 	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank2: $(MAIN) $(OBJ_BANK_RBT)
+bank2: $(MAIN) $(OBJ_BANK_RBT) obj
 	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank3: $(MAIN) $(OBJ_BANK_TRIE)
+bank3: $(MAIN) $(OBJ_BANK_TRIE) obj
 	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank4: $(MAIN) $(OBJ_BANK_MUR) $(OBJ_MURMUR)
+bank4: $(MAIN) $(OBJ_BANK_MUR) $(OBJ_MURMUR) obj
 	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_MUR) $(OBJ_MURMUR) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
 run1:
