@@ -52,7 +52,7 @@ void Account::printHistory() {
   }
 }
 
-void Account::searchHistory(const string& id, const bool isAlive) {
+void Account::searchHistory(const string& id) {
   bool no_record = true;
   std::vector<logNode*>::iterator it;
   for (it = _log.begin(); it != _log.end(); ++it) {
@@ -67,10 +67,7 @@ void Account::searchHistory(const string& id, const bool isAlive) {
     }
   }
   if (no_record) {
-    if (isAlive)
-      std::cout << "no record\n";
-    else
-      std::cout << "ID " << id << " not found\n";
+    std::cout << "no record\n";
   }
 }
 

@@ -104,12 +104,8 @@ void BankUMap::findAccount(const string& reg_exp) {
 }
 
 void BankUMap::searchHistory(const string& id) {
-  UMap::iterator it2 = umap.find(id);
   UMap::iterator it1 = umap.find(current_login_user);
-  if (it2 == umap.end())
-    (*it1).second.searchHistory(id, false);
-  else
-    (*it1).second.searchHistory(id, true);
+  (*it1).second.searchHistory(id);
 }
 
 // following is for recommending accounts

@@ -33,7 +33,7 @@ class Account {
   // when use transfer, please check that ID is exist or not first
   void transferOut(Account& b, const int& money, TransferLog& lg);
   // when use search, please check that searched ID is exist or not first
-  void searchHistory(const string& id, const bool isAlive);
+  void searchHistory(const string& id);
 
   // these two is for debugging
   void printHistory();
