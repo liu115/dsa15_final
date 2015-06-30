@@ -27,7 +27,9 @@ OBJ_BANK_TRIE=bank_trie.o
 
 MAIN=main.cpp
 
-all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP) $(OBJ_BANK_RBT)
+RESULT=final_project
+
+all: $(OBJ_MD5) $(OBJ_SHA) $(OBJ_ACCOUNT) $(OBJ_BANK_UMAP) $(RESULT)
 
 $(OBJ_MD5): $(TAR_MD5)
 	$(CC) $(CFLAGS) -c $(TAR_MD5)
@@ -48,22 +50,19 @@ $(OBJ_BANK_TRIE): $(TAR_BANK_TRIE)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_TRIE)
 
 bank1: $(MAIN)
-	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_um.out
+	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
 bank2: $(MAIN)
-	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_rb.out
+	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
 bank3: $(MAIN)
-	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o bank_tr.out
+	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
+
+$(RESULT): $(MAIN)
+	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
 run1:
-	./bank_um.out
-
-run2:
-	./bank_rb.out
-
-run3:
-	./bank_tr.out
+	./final_project
 
 clean:
-	rm -rf account.o md5.o sha256.o bank_unordered_map.o bank_um.out
+	rm -rf account.o md5.o sha256.o bank_unordered_map.o bank_rb_tree.o bank_trie.o final_project
