@@ -68,29 +68,6 @@ void BankRBTree::deleteAccount(const string& id, const string& passwd){
       cout << "wrong password\n";
 }
 
-std::string regex_change(const std::string& wildcard_ID){
-  std::string res = wildcard_ID;
-  std::string reg = "[a-zA-Z0-9]";
-  int pos = 0;
-  while(pos != -1){
-    pos = res.find("*", pos);
-    if(pos != -1){
-      res.insert(pos, reg);
-      pos += 12;
-    }
-  }
-  pos = 0;
-  while( pos != -1){
-    pos = res.find("?", pos);
-    if( pos != -1){
-      res.replace(pos, 1, reg);
-      pos += 11;
-    }
-  }
-  return res;
-}
-
-
 void BankRBTree::mergeAccount(const string& id1, const string& passwd1, const string& id2, const string& passwd2){
   string now_id1 = id1;
   DataNode la1 = DataNode(&now_id1, NULL);
@@ -130,6 +107,40 @@ void BankRBTree::accountWithdraw(const int& money){
   res->second->withdrawMoney(money);
 }
 
+int wildcmp(const char *wild, const char *string) {
+  // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
+  const char *cp = NULL, *mp = NULL;
+
+  while ((*string) && (*wild != '*')) {
+    if ((*wild != *string) && (*wild != '?')) {
+      return 0;
+    }
+    wild++;
+    string++;
+  }
+
+  while (*string) {
+    if (*wild == '*') {
+      if (!*++wild) {
+        return 1;
+      }
+      mp = wild;
+      cp = string+1;
+    } else if ((*wild == *string) || (*wild == '?')) {
+      wild++;
+      string++;
+    } else {
+      wild = mp;
+      string = cp++;
+    }
+  }
+
+  while (*wild == '*') {
+    wild++;
+  }
+  return !*wild;
+}
+
 void BankRBTree::transfer(const string& id, const int& money){
   string now_id = id;
   DataNode la2 = DataNode(&now_id, NULL);
@@ -152,15 +163,13 @@ void BankRBTree::transfer(const string& id, const int& money){
 }
 
 void BankRBTree::findAccount(const string& reg_exp){
-  string id;
   RecommendId vec;
-  std::regex reg(regex_change(reg_exp));
   rb_traverser bank_traverser;
   rb_t_init(&bank_traverser, rb_tree);
   DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
   while(res != NULL){
-    id = (*(res->first));
-    if (std::regex_match((*(res->first)), reg) && (*(res->first)) != current_login_user)
+    //id = (*(res->first));
+    if (wildcmp((*(res->first)).c_str(),reg_exp.c_str()) && (*(res->first)) != current_login_user)
       vec.push_back(*(res->first));
     res = (DataNode*)rb_t_next(&bank_traverser);
   }
