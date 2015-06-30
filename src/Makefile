@@ -16,6 +16,9 @@ OBJ_SHA=sha256.o
 TAR_HASH=account/MurmurHash3.cpp
 OBJ_HASH=MurmurHash3.o
 
+TAR_RB=rb.c
+OBJ_RB=rb.o
+
 TAR_MURMUR=account/encoder/murmurhash.c
 OBJ_MURMUR=murmurhash.o
 
@@ -54,6 +57,9 @@ $(OBJ_MURMUR): $(TAR_MURMUR)
 $(OBJ_BANK_UMAP): $(TAR_BANK_UMAP)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_UMAP)
 
+$(OBJ_RB): $(TAR_RB)
+	gcc -std=c99 -O2 -Wall $(TAR_RB) -c
+
 $(OBJ_BANK_RBT): $(TAR_BANK_RBT)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_RBT)
 
@@ -66,8 +72,8 @@ $(OBJ_BANK_MUR): $(TAR_BANK_MUR)
 bank1: $(MAIN) $(OBJ_BANK_UMAP) obj
 	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
 
-bank2: $(MAIN) $(OBJ_BANK_RBT) obj
-	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
+bank2: $(MAIN) $(OBJ_BANK_RBT) obj $(OBJ_RB)
+	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(OBJ_RB) $(MAIN) -o final_project
 
 bank3: $(MAIN) $(OBJ_BANK_TRIE) obj
 	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
@@ -79,4 +85,4 @@ run1:
 	./final_project
 
 clean:
-	rm -rf account.o md5.o sha256.o murmurhash.o bank_unordered_map.o bank_rb_tree.o bank_trie.o bank_unordered_map_murmur.o final_project
+	rm -rf account.o md5.o sha256.o murmurhash.o bank_unordered_map.o bank_rb_tree.o bank_trie.o bank_unordered_map_murmur.o rb.o final_project
