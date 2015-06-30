@@ -2,142 +2,141 @@
 //Copyright 2015-6 dsa_final15
 
 #include "bank_rb_tree.h"
-extern int w_compare(const void* , const void*);
-
-/*int BankRBTree::w_compare(const void *pa, const void *pb, void *param){
+int word_compare(const void *pa, const void *pb, void *param){
   const DataNode *a = ((const DataNode *)pa);
   const DataNode *b = ((const DataNode *)pb);
 
   if (a->first->compare(*(b->first)) < 0) return -1;
   else if (a->first->compare(*(b->first)) > 0) return +1; 
   else return 0;
-}*/
+}
 
-/*BankRBTree::lg(){
-  rb_tree = rb_create(w_compare, NULL, NULL);
-}*/
 
 void BankRBTree::loginAccount(const string& id, const string& passwd){
-	string now_id = id;
-	DataNode la = DataNode(&now_id, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-	if(res == NULL)
-		cout << "ID " << id << " not found\n";
-	else{
-		if(res->second->verifyPassword(passwd) == true){
-			current_login_user = id;
-			cout << "success\n";
-		}
-		else {
-			cout << "wrong password\n";
-		}
-	}
+  string now_id = id;
+  DataNode la = DataNode(&now_id, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  if(res == NULL)
+    cout << "ID " << id << " not found\n";
+  else{
+    if(res->second->verifyPassword(passwd) == true){
+      current_login_user = id;
+      cout << "success\n";
+    }
+    else {
+      cout << "wrong password\n";
+    }
+  }
 }
 
 void BankRBTree::createAccount(const string& id, const string& passwd){
-	if(rb_find(rb_tree, &id) == NULL){
-		string* now_id = new string(id);
-		Account* new_ac = new Account(id, passwd);
-		DataNode* data = new DataNode(now_id, new_ac);
-		rb_probe(rb_tree, data);
-		cout << "success\n";
-	}
-	else{
-		cout << "ID " << id << " exists, ";
-		// recommend 10 best account
-		RecommendId best10;
-		getRecommend(id, best10);
-		cout << best10[0];
-		for (int i = 1; i < 10; ++i)
-			cout << "," <<  best10[i];
-		cout << "\n";
-	}
+  string now_id = id;
+  DataNode la = DataNode(&now_id, NULL);
+  if(rb_find(rb_tree, &la) == NULL){
+    string* now_id = new string(id);
+    Account* new_ac = new Account(id, passwd);
+    DataNode* data = new DataNode(now_id, new_ac);
+    rb_probe(rb_tree, data);
+    cout << "success\n";
+  }
+  else{
+    cout << "ID " << id << " exists, ";
+    // recommend 10 best account
+    RecommendId best10;
+    getRecommend(id, best10);
+    cout << best10[0];
+    for (int i = 1; i < 10; ++i)
+      cout << "," <<  best10[i];
+    cout << "\n";
+  }
 }
 
 void BankRBTree::deleteAccount(const string& id, const string& passwd){
-	string now_id = id;
-	DataNode la = DataNode(&now_id, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-	if(res->second == NULL)
-		cout << "ID " << id << " not found\n";
-	else
-		if(res->second->verifyPassword(passwd) == true){
-			rb_delete(rb_tree, res);
-			cout << "success\n";
-		}
-		else
-			cout << "wrong password\n";
+  //if(&rb_tree == NULL)
+    //cout << "ID " << id << " not found\n";
+  string now_id = id;
+  DataNode la = DataNode(&now_id, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  if(res == NULL)
+    cout << "ID " << id << " not found\n";
+  else
+    if(res->second->verifyPassword(passwd) == true){
+      rb_delete(rb_tree, res);
+      cout << "success\n";
+    }
+    else
+      cout << "wrong password\n";
 }
 
 void BankRBTree::mergeAccount(const string& id1, const string& passwd1, const string& id2, const string& passwd2){
-	string now_id1 = id1;
-	DataNode la1 = DataNode(&now_id1, NULL);
-	DataNode* res1 = (DataNode*)rb_find(rb_tree, &la1);
-	string now_id2 = id2;
-	DataNode la2 = DataNode(&now_id2, NULL);
-	DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
-	if(res1->second == NULL){
-		cout << "ID " << id1 << " not found\n";
-		return;
-	}
-	if(res2->second == NULL){
-		cout << "ID " << id2 << " not found\n";
-		return;
-	}
-	if(res1->second->verifyPassword(passwd1) == false){
-		cout << "wrong password1\n";
-		return;
-	}
-	if(res2->second->verifyPassword(passwd2) == false){
-		cout << "wrong password2\n";
-		return;
-	}
-	res1->second->mergeAccount(*(res2->second));
+  string now_id1 = id1;
+  DataNode la1 = DataNode(&now_id1, NULL);
+  DataNode* res1 = (DataNode*)rb_find(rb_tree, &la1);
+  string now_id2 = id2;
+  DataNode la2 = DataNode(&now_id2, NULL);
+  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
+  if(res1 == NULL){
+    cout << "ID " << id1 << " not found\n";
+    return;
+  }
+  if(res2 == NULL){
+    cout << "ID " << id2 << " not found\n";
+    return;
+  }
+  if(res1->second->verifyPassword(passwd1) == false){
+    cout << "wrong password1\n";
+    return;
+  }
+  if(res2->second->verifyPassword(passwd2) == false){
+    cout << "wrong password2\n";
+    return;
+  }
+  res1->second->mergeAccount(*(res2->second));
+  rb_delete(rb_tree, res2);
 }
 
 void BankRBTree::accountDeposit(const int& money){
-	DataNode la = DataNode(&current_login_user, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-	res->second->depositMoney(money);
+  DataNode la = DataNode(&current_login_user, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  res->second->depositMoney(money);
 }
 
 void BankRBTree::accountWithdraw(const int& money){
-	DataNode la = DataNode(&current_login_user, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-	res->second->withdrawMoney(money);
+  DataNode la = DataNode(&current_login_user, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  res->second->withdrawMoney(money);
 }
 
 void BankRBTree::transfer(const string& id, const int& money){
-	string now_id = id;
-	DataNode la2 = DataNode(&now_id, NULL);
-	DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
-	if(res2 == NULL){
-		cout << "ID " << id << " not found, ";
-		// recommend 10 best exist id
-		RecommendId rid;
-		existRecommend(id, rid);
-		if(rid.size() > 0)
-			cout << rid[0];
-		for (int i = 1; i < rid.size(); ++i)
-			cout << "," << rid[i];
-		cout << "\n";
-	}
-	else{
-		DataNode la = DataNode(&current_login_user, NULL);
-		DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-		res->second->transferOut((*(res2->second)), money, lg);
-	}
+  string now_id = id;
+  DataNode la2 = DataNode(&now_id, NULL);
+  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
+  if(res2 == NULL){
+    cout << "ID " << id << " not found, ";
+    RecommendId rid;
+    existRecommend(id, rid);
+    if(rid.size() > 0)
+      cout << rid[0];
+    for (int i = 1; i < rid.size(); ++i)
+      cout << "," << rid[i];
+    cout << "\n";
+  }
+  else{
+    DataNode la = DataNode(&current_login_user, NULL);
+    DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+    res->second->transferOut((*(res2->second)), money, lg);
+  }
 }
 
 void BankRBTree::findAccount(const string& rex_exp){
-	cout << "\n";
+  cout << "\n";
 }
 
 void BankRBTree::searchHistory(const string& id){
-	DataNode la = DataNode(&current_login_user, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-	//Account* res1 = (Account*)rb_find(&rb_tree, &current_login_user);
-	res->second->searchHistory(id);		
+  DataNode la = DataNode(&current_login_user, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  //Account* res1 = (Account*)rb_find(&rb_tree, &current_login_user);
+  res->second->searchHistory(id);   
 }
 
 // following is for recommending accounts
@@ -195,9 +194,9 @@ void BankRBTree::getRecommend(const string& oid, RecommendId& rid) {
 
 void BankRBTree::runRecommend(string id, string oid, int len, RecommendId& rid, int degree_c, int degree_a) {
   if (degree_c == 0 && degree_a == 0) {
-  	string now_id = id;
-	DataNode la = DataNode(&now_id, NULL);
-	DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+    string now_id = id;
+  DataNode la = DataNode(&now_id, NULL);
+  DataNode* res = (DataNode*)rb_find(rb_tree, &la);
     //Account* res = (Account*)rb_find(&rb_tree, &id);
     if (res == NULL) {
       // it means that the id isn't exist in the bank
@@ -247,21 +246,22 @@ void BankRBTree::existRecommend(const string& oid, RecommendId& id_container) {
   rb_t_init(&bank_traverser, rb_tree);
   DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
   while(res != NULL){
-  	id = (*(res->first));
-  	score = computeScoring(oid, id);
-  	score_id.push_back(make_pair(score, id));
-  	res = (DataNode*)rb_t_next(&bank_traverser);
+    id = (*(res->first));
+    score = computeScoring(oid, id);
+    score_id.push_back(make_pair(score, id));
+    res = (DataNode*)rb_t_next(&bank_traverser);
   }
   int i = 0, j, selected_index;
   while (i < 10 && i < score_id.size()) {
     score = score_id[i].first;
     id = score_id[i].second;
+    selected_index = i;
     for (j = i; j < score_id.size(); ++j) {
       if (score_id[j].first < score) {
         score = score_id[j].first;
         id = score_id[j].second;
         selected_index = j;
-      } else if (score_id[j].first == score && id.compare(score_id[j].second) < 0) {
+      } else if (score_id[j].first == score && id.compare(score_id[j].second) > 0) {
         score = score_id[j].first;
         id = score_id[j].second;
         selected_index = j;
