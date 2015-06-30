@@ -110,8 +110,19 @@ void BankTrie::transfer(const string& id, const int& money) {
 }
 
 void BankTrie::findAccount(const string& reg_exp) {
+  RegString rs;
+  regexFind(reg_exp, rs);
+  if (rs.size() > 0) {
+    sort(rs.begin(), rs.end());
+    cout << rs[0];
+    for (int i = 1; i < rs.size(); i++) {
+      cout << "," << rs[i];
+    }
+  }
   cout << "\n";
 }
+
+
 
 void BankTrie::searchHistory(const string& id) {
   Account *ac = getAccount(current_login_user);
