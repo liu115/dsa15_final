@@ -164,13 +164,19 @@ void BankRBTree::transfer(const string& id, const int& money){
 
 void BankRBTree::findAccount(const string& reg_exp){
   RecommendId vec;
+  vec.clear();
   rb_traverser bank_traverser;
   rb_t_init(&bank_traverser, rb_tree);
   DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
+  //if(res == NULL)
+    //cout << "Fuck u c++ and dsa and rb_tree.";
   while(res != NULL){
     //id = (*(res->first));
-    if (wildcmp((*(res->first)).c_str(),reg_exp.c_str()) && (*(res->first)) != current_login_user)
+    //cout << wildcmp((*(res->first)).c_str(),reg_exp.c_str());
+    if (wildcmp(reg_exp.c_str(), (*(res->first)).c_str()) && (*(res->first)) != current_login_user){
       vec.push_back(*(res->first));
+      cout << (*(res->first)) << "\n";
+    }
     res = (DataNode*)rb_t_next(&bank_traverser);
   }
   if (vec.size() > 0) {
