@@ -220,14 +220,15 @@ class Trie {
   
   void regFind(trie_node *node, int node_index, const string &reg, int now, RegString &rs) {
     if (node == NULL) return;
-    if (node_index == node->end && now == reg.length() && node && node->element) {
+    if (node_index == node->end && now == reg.length() && node->element) {
+      if (node->reg_flag == reg_cnt) return;
       string tmpid;
       tmpid.assign(node->str, 0, node->end + 1);
-      if (node->reg_flag == reg_cnt) return;
       rs.push_back(tmpid);
       node->reg_flag = reg_cnt;
       return;
     }
+    if (node_index > node->end || now >= reg.length()) return;
     if (reg[now] == '*') {
       regFind(node, node_index, reg, now + 1, rs);
       if (node == root) {
