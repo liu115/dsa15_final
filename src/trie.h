@@ -5,8 +5,10 @@
 #define SRC_TRIE_H_
 
 #include <string>
+#include <vector>
 using namespace std;
 #define TREE_WIDTH 62
+typedef vector<string> RegString;
 template<class T>
 class Trie {
  private:
@@ -40,6 +42,9 @@ class Trie {
       }
   };
   trie_node *root;
+  trie_node *childOf(const char c, trie_node *node) {
+    return node->child[map_key(c)];
+  }
   
   Trie() {
     size = 0;
@@ -208,9 +213,73 @@ class Trie {
       remove(node->child[map_key(x[p + 1])], x, p + 1, end);
     }
     
-
   }
   
+  void regFind(trie_node *node, int node_index, string &reg, int now, RegString &rs) {
+    if (node == NULL) return;
+    if (node_index == node->end && now == reg.length() && node && node->element) {
+      string tmpid;
+      tmpid.assign(node->str, 0, node->end + 1);
+      rs.push_back(tmpid);
+    }
+    if (reg[now] == '*') {
+      regFind(node, node_index, reg, now + 1, rs);
+      if (node == root) {
+        for (int i = 0; i < TREE_WIDTH; i++) {
+          if (node->child[i]) {
+            regFind(node->child[i], node_index + 1, reg, now, rs);
+          }
+        }
+        return;
+      }
+      if (node_index < node->end) {
+        regFind(node, node_index + 1, reg, now, rs);
+      }
+      else if (node_index == node->end) {
+        for (int i = 0; i < TREE_WIDTH; i++) {
+          if (node->child[i]) {
+            regFind(node->child[i], node_index + 1, reg, now, rs);
+          }
+        }
+      }
+    }
+    else if (reg[now] == '?') {
+      if (node == root) {
+        for (int i = 0; i < TREE_WIDTH; i++) {
+          if (node->child[i]) {
+            regFind(node->child[i], node_index, reg, now + 1, rs);
+          }
+        }
+        return;
+      }
+      if (node_index < node->end) {
+        regFind(node, node_index + 1, reg, now + 1, rs);
+      }
+      else if (node_index == node->end) {
+        for (int i = 0; i < TREE_WIDTH; i++) {
+          if (node->child[i]) {
+            regFind(node->child[i], node_index + 1, reg, now + 1, rs);
+          }
+        }
+      }
+    }
+    
+    else {
+      if (node == root) {
+        regFind(node->child[map_key(reg[now])], node_index, reg, now + 1, rs);
+        return;
+      }
+      if (node_index < node->end) {
+        if (node->str[node_index + 1] == reg[now]) {
+          regFind(node, node_index + 1, reg, now + 1, rs);
+        }
+      }
+      if (node_index == node->end) {
+        if (node->child[map_key(reg[now])] == NULL) return;
+        regFind(node->child[map_key(reg[now])], node_index + 1, reg, now + 1, rs);
+      }
+    }
+  }
 };
 
 #endif // SRC_TRIE_H_
