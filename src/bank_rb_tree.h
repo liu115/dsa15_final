@@ -2,17 +2,39 @@
 //Copyright 2015-6 dsa_final15
 //This is the bank system implemented with rb tree
 
+#ifndef SRC_BANK_RB_TREE_H_
+#define SRC_BANK_RB_TREE_H_
+
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 #include "account/account.h"
 #include "rb.h"
 #include "recommend.h"
+using std::make_pair;
+using std::string;
+using std::vector;
+using std::pair;
+using std::cout;
 
-using namespace std;
+typedef vector<string> RecommendId;
+typedef pair<string*, Account*> DataNode;
+
+int word_compare(const void *pa, const void *pb, void *param){
+	const DataNode *a = ((const DataNode *)pa);
+	const DataNode *b = ((const DataNode *)pb);
+
+	if (a->first->compare(*(b->first)) < 0) return -1;
+	else if (a->first->compare(*(b->first)) > 0) return +1; 
+	else return 0;
+}
 
 class BankRBTree{
 public:
-	BankRBTree(): lg() {}
+	BankRBTree(): lg() {
+		rb_tree = rb_create(word_compare, NULL, NULL);
+	}
 	~BankRBTree() {}
 
 	void loginAccount(const string& id, const string& passwd);
@@ -25,9 +47,22 @@ public:
 	void transfer(const string& id, const int& money);
 	void findAccount(const string& reg_exp);
 	void searchHistory(const string& id);
+	
+	int max_num(const int a, const int b);
+	int min_num(const int a, const int b);
+	int abs_num(const int a);
+	char next_char(const char);
+	char prev_char(const char);
+	int computeScoring(const string&, const string&);
+	void getRecommend(const string&, RecommendId&);
+	void runRecommend(string, string, int, RecommendId&, int, int);
+
+	void existRecommend(const string&, RecommendId&);
 
 private:
 	string current_login_user;
 	rb_table *rb_tree;
 	TransferLog lg;
 };
+
+#endif // SRC_BANK_RB_TREE_H_
