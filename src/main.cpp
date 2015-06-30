@@ -8,7 +8,7 @@
 #elif defined(BANK_RB)
   // #include "bank_rb_tree.h"
 #elif defined(BANK_TR)
-  // #include "bank_trie.h"
+   #include "bank_trie.h"
 #else
   // #include "bank_unordered_map.h"
 #endif
@@ -27,7 +27,7 @@ int main(){
 	#elif defined(BANK_RB)
 		// BankRBTree bank;
 	#elif defined(BANK_TR)
-		// BankTrie bank;
+		 BankTrie bank;
 	#else
 		// BankUMap bank;
 	#endif

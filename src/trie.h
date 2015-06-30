@@ -10,6 +10,7 @@ using namespace std;
 template<class T>
 class Trie {
  private:
+  int size;
   int map_key(const char& c) {
     int mp = (int)c - 48; // mapping 0 - 9
     if (mp > 16) mp -= 7; // mapping A - Z
@@ -41,6 +42,7 @@ class Trie {
   trie_node *root;
   
   Trie() {
+    size = 0;
     string *empty = new string("");
     root = new trie_node(NULL, *empty, 0, 0); //root->element = NULL
     // root->parent = NULL
@@ -49,7 +51,9 @@ class Trie {
     delete &(root->str);
     delete root;
   }
-
+  int getSize() {
+    return size;
+  }
   trie_node *find(trie_node *node, const string &x, int begin, int end) {
     if (node == NULL) return NULL;
     if (node == root) 
@@ -86,6 +90,7 @@ class Trie {
     if (node == NULL) {
       trie_node *new_node = new trie_node(element, x, begin, end);
       //hang element
+      size++;
       return new_node;
     }
     //cout << node->str << " " << node->begin << " " << node->end << '\n';
@@ -98,6 +103,7 @@ class Trie {
     int p = prefix(x, begin, end, node->str, node->begin, node->end);
     if (p == node->end && p == end) {
       node->element = element;
+      size++;
       return node; //hang the element
     }
     if (p < node->end && p < end) {
@@ -115,6 +121,7 @@ class Trie {
       node = node->parent;
       //cout << "split "<< node->str << " " << node->begin << " " << node->end << '\n';
       node->element = element; //hang the element
+      size++;
       return node;
     }
     else if (p < end) {
@@ -139,6 +146,7 @@ class Trie {
     }
     int p = prefix(x, begin, end, node->str, node->begin, node->end);
     if (p == end && p == node->end) {
+      size--;
       //delete this node
       trie_node *parent = node->parent;
       int sibling_num = 0, child_num = 0;
@@ -170,7 +178,6 @@ class Trie {
           node->parent->child[map_key(node->str[node->begin])] = NULL;
           delete node;
           if (parent->element == NULL && parent != root) {
-            puts("merge_child");
             merge_child(parent, first_sibling);
           }
         }
