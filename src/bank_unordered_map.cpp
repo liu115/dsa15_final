@@ -101,15 +101,15 @@ void BankUMap::transfer(const string& id, const int& money) {
 
 void BankUMap::findAccount(const string& reg_exp) {
   RecommendId vec;
-  std::regex reg(regex_change(reg_exp));
+  vec.clear();
   for (UMap::iterator it = umap.begin(); it != umap.end(); ++it) {
-    if (std::regex_match(it->first, reg) && it->first != current_login_user)
+    if (wildcmp(reg_exp.c_str(), (it->first).c_str()) && (it->first) != current_login_user)  
       vec.push_back(it->first);
   }
-  if (vec.size() > 0) {
+  if ((int)vec.size() > 0) {
     sort(vec.begin(), vec.end());
     cout << vec[0];
-    for (int i = 1; i < vec.size(); ++i)
+    for (int i = 1; i < (int)vec.size(); ++i)
       cout << "," << vec[i];
   }
   cout << "\n";
@@ -247,24 +247,36 @@ void BankUMap::existRecommend(const string& oid, RecommendId& id_container) {
   }
 }
 
-std::string regex_change(const std::string& wildcard_ID){
-  std::string res = wildcard_ID;
-  std::string reg = "[a-zA-Z0-9]";
-  int pos = 0;
-  while(pos != -1){
-    pos = res.find("*", pos);
-    if(pos != -1){
-      res.insert(pos, reg);
-      pos += 12;
+int wildcmp(const char *wild, const char *string) {
+  // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
+  const char *cp = NULL, *mp = NULL;
+
+  while ((*string) && (*wild != '*')) {
+    if ((*wild != *string) && (*wild != '?')) {
+      return 0;
+    }
+    wild++;
+    string++;
+  }
+
+  while (*string) {
+    if (*wild == '*') {
+      if (!*++wild) {
+        return 1;
+      }
+      mp = wild;
+      cp = string+1;
+    } else if ((*wild == *string) || (*wild == '?')) {
+      wild++;
+      string++;
+    } else {
+      wild = mp;
+      string = cp++;
     }
   }
-  pos = 0;
-  while( pos != -1){
-    pos = res.find("?", pos);
-    if( pos != -1){
-      res.replace(pos, 1, reg);
-      pos += 11;
-    }
+
+  while (*wild == '*') {
+    wild++;
   }
-  return res;
+  return !*wild;
 }
