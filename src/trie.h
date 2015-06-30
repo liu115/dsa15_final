@@ -1,6 +1,6 @@
 // trie.h
 // Copyright 2015-06 dsa_final15
-
+// Caution: allocate a new trie_node must also allocate memory for string and element
 #ifndef SRC_TRIE_H_
 #define SRC_TRIE_H_
 
@@ -26,7 +26,6 @@ class Trie {
   
  public:
   struct trie_node {
-    bool isLeaf;
     T *element;
     const string &str;
     int begin, end;
@@ -34,6 +33,9 @@ class Trie {
     trie_node *child[TREE_WIDTH];
     trie_node(T *ele, const string &_str, int b, int e): \
       element(ele), str(_str), begin(b), end(e) {
+        for (int i = 0; i < TREE_WIDTH; i++) {
+          child[i] = NULL;
+        }
       }
   };
   trie_node *root;
@@ -121,19 +123,8 @@ class Trie {
       new_node->parent = node;
       return node;
     }
-  }/*
-  void merge_parent(trie_node *node) {
-    trie_node *parent = node->parent;
-    //parent->child[map_key(node->str[node->begin])] = NULL;
-    for (int i = 0; i < 62; i++) {
-      node->child[i]->parent = parent;
-      parent->child[i] = node->child[i];
-    }
-    parent->str = node->str;
-    parent->end = node->end;
-    parent->element = node->element;
-    delete node;
-  }*/
+    return NULL;
+  }
   void merge_child(trie_node *node, trie_node *child) {
     child->parent = node->parent;
     node->parent->child[map_key(node->str[node->begin])] = child;
@@ -178,7 +169,8 @@ class Trie {
         if (child_num == 0) {
           node->parent->child[map_key(node->str[node->begin])] = NULL;
           delete node;
-          if (parent->element == NULL) {
+          if (parent->element == NULL && parent != root) {
+            puts("merge_child");
             merge_child(parent, first_sibling);
           }
         }
@@ -211,22 +203,7 @@ class Trie {
     
 
   }
-  // to do wrong operation protection, it will return NULL
-  /*
-  trie_node* getPos(const std::string s) {
-    int i = 0, mp;
-    trie_node *curr = root;
-    while (s[i] != '\0') {
-      mp = map_key(s[i]);
-      if (!curr->child[mp])
-        return NULL;
-      curr = curr->child[mp];
-      i++;
-    }
-    if (curr->isKey) return curr;
-    else return NULL;
-  }
-  */
+  
 };
 
 #endif // SRC_TRIE_H_
