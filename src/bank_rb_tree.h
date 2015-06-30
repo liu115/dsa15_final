@@ -10,8 +10,10 @@
 #include <vector>
 #include <algorithm>
 #include "account/account.h"
+extern "C"
+{
 #include "rb.h"
-#include "recommend.h"
+}
 using std::make_pair;
 using std::string;
 using std::vector;
@@ -21,19 +23,22 @@ using std::cout;
 typedef vector<string> RecommendId;
 typedef pair<string*, Account*> DataNode;
 
-int word_compare(const void *pa, const void *pb, void *param){
+#define RECOMMEND_SIZE 10
+#define MAX_STRING_SIZE 100
+
+int w_compare(const void *pa, const void *pb, void *param){
 	const DataNode *a = ((const DataNode *)pa);
 	const DataNode *b = ((const DataNode *)pb);
-
 	if (a->first->compare(*(b->first)) < 0) return -1;
 	else if (a->first->compare(*(b->first)) > 0) return +1; 
 	else return 0;
-}
+};
+
 
 class BankRBTree{
 public:
 	BankRBTree(): lg() {
-		rb_tree = rb_create(word_compare, NULL, NULL);
+		rb_tree = rb_create(w_compare, NULL, NULL);
 	}
 	~BankRBTree() {}
 
@@ -48,6 +53,7 @@ public:
 	void findAccount(const string& reg_exp);
 	void searchHistory(const string& id);
 	
+
 	int max_num(const int a, const int b);
 	int min_num(const int a, const int b);
 	int abs_num(const int a);
