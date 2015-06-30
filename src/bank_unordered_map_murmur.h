@@ -7,11 +7,13 @@
 
 #include <iostream>
 #include <vector>
-#include <regex>
 #include <algorithm>
 #include <unordered_map>
-//#include "regex_translate.h"
 #include "account/account.h"
+extern "C" {
+  #include "account/encoder/murmurhash.h"  
+}
+
 using std::unordered_map;
 using std::make_pair;
 using std::string;
@@ -22,9 +24,28 @@ using std::cout;
 #define RECOMMEND_SIZE 10
 #define MAX_STRING_SIZE 100
 
+uint32_t seed = 479909;
+
+class Hasher {
+ public:
+  std::size_t operator() (std::string const& key) const {
+    uint32_t hashed_key;
+    // MurmurHash3_x64_128(&key, key.length(), seed, &hashed_key);
+    hashed_key = murmurhash(key.c_str(), key.length(), seed);
+    return hashed_key;
+  }
+};
+
+class EqualFn{
+ public:
+  bool operator() (std::string const& t1, std::string const& t2) const {
+    return t1 == t2;
+  }
+};
+
 typedef vector<string> RecommendId;
 
-typedef unordered_map<std::string, Account> UMap;
+typedef unordered_map<std::string, Account, Hasher, EqualFn> UMap;
 
 class BankUMap {
  public:
@@ -58,7 +79,5 @@ class BankUMap {
   UMap umap; // unordered_map<std::string, Account>
   TransferLog lg; // this is the log record system with time-record
 };
-
-std::string regex_change(const std::string&);
 
 #endif // SRC_BANK_UNORDERED_MAP_H_
