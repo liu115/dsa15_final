@@ -234,7 +234,7 @@ class Trie {
       if (node == root) {
         for (int i = 0; i < TREE_WIDTH; i++) {
           if (node->child[i]) {
-            regFind(node->child[i], node_index + 1, reg, now, rs);
+            regFind(node->child[i], node_index, reg, now, rs);
           }
         }
         return;
