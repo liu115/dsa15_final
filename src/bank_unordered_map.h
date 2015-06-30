@@ -7,8 +7,10 @@
 
 #include <iostream>
 #include <vector>
+#include <regex>
 #include <algorithm>
 #include <unordered_map>
+//#include "regex_translate.h"
 #include "account/account.h"
 using std::unordered_map;
 using std::make_pair;
@@ -56,5 +58,7 @@ class BankUMap {
   UMap umap; // unordered_map<std::string, Account>
   TransferLog lg; // this is the log record system with time-record
 };
+
+std::string regex_change(const std::string&);
 
 #endif // SRC_BANK_UNORDERED_MAP_H_
