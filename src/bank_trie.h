@@ -21,10 +21,11 @@ using std::cout;
 #define RECOMMEND_SIZE 10
 #define MAX_STRING_SIZE 100
 
-typedef vector<string> RecommendId;
-
 typedef Trie<Account>::trie_node Node;
+
+typedef vector<string> RecommendId;
 typedef vector< pair<int, string> > ScoringId;
+typedef vector<int> RegPlace;
 
 class BankTrie {
  public:
@@ -69,6 +70,9 @@ class BankTrie {
     for (int i = 0; i < TREE_WIDTH; i++) {
       computeAllScore(node->child[i], container, oid);
     }
+  }
+  void regexFind(const string &reg, RegString &rs) {
+    tree.regFind(tree.root, 0, reg, 0, rs);
   }
 };
 
