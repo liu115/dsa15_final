@@ -107,6 +107,40 @@ void BankRBTree::accountWithdraw(const int& money){
   res->second->withdrawMoney(money);
 }
 
+int wildcmp(const char *wild, const char *string) {
+  // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
+  const char *cp = NULL, *mp = NULL;
+
+  while ((*string) && (*wild != '*')) {
+    if ((*wild != *string) && (*wild != '?')) {
+      return 0;
+    }
+    wild++;
+    string++;
+  }
+
+  while (*string) {
+    if (*wild == '*') {
+      if (!*++wild) {
+        return 1;
+      }
+      mp = wild;
+      cp = string+1;
+    } else if ((*wild == *string) || (*wild == '?')) {
+      wild++;
+      string++;
+    } else {
+      wild = mp;
+      string = cp++;
+    }
+  }
+
+  while (*wild == '*') {
+    wild++;
+  }
+  return !*wild;
+}
+
 void BankRBTree::transfer(const string& id, const int& money){
   string now_id = id;
   DataNode la2 = DataNode(&now_id, NULL);
@@ -128,7 +162,23 @@ void BankRBTree::transfer(const string& id, const int& money){
   }
 }
 
-void BankRBTree::findAccount(const string& rex_exp){
+void BankRBTree::findAccount(const string& reg_exp){
+  RecommendId vec;
+  rb_traverser bank_traverser;
+  rb_t_init(&bank_traverser, rb_tree);
+  DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
+  while(res != NULL){
+    //id = (*(res->first));
+    if (wildcmp((*(res->first)).c_str(),reg_exp.c_str()) && (*(res->first)) != current_login_user)
+      vec.push_back(*(res->first));
+    res = (DataNode*)rb_t_next(&bank_traverser);
+  }
+  if (vec.size() > 0) {
+    sort(vec.begin(), vec.end());
+    cout << vec[0];
+    for (int i = 1; i < vec.size(); ++i)
+      cout << "," << vec[i];
+  }
   cout << "\n";
 }
 
