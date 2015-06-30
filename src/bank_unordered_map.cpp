@@ -65,7 +65,7 @@ void BankUMap::mergeAccount(const string& id1, const string& passwd1, const stri
     return;
   }
   if (!(*it2).second.verifyPassword(passwd2)) {
-    cout << "wrong passwd2\n";
+    cout << "wrong password2\n";
     return;
   }
   (*it1).second.mergeAccount((*it2).second);
@@ -209,7 +209,7 @@ void BankUMap::existRecommend(const string& oid, RecommendId& id_container) {
   id_container.clear();
   id_container.reserve(10);
   vector< pair<int, string> > score_id;
-  score_id.reserve(umap.size() + 1);
+  score_id.reserve(umap.size());
   int score;
   string id;
   for (UMap::iterator it = umap.begin(); it != umap.end(); ++it) {
@@ -221,12 +221,13 @@ void BankUMap::existRecommend(const string& oid, RecommendId& id_container) {
   while (i < 10 && i < score_id.size()) {
     score = score_id[i].first;
     id = score_id[i].second;
+    selected_index = i;
     for (j = i; j < score_id.size(); ++j) {
       if (score_id[j].first < score) {
         score = score_id[j].first;
         id = score_id[j].second;
         selected_index = j;
-      } else if (score_id[j].first == score && id.compare(score_id[j].second) < 0) {
+      } else if (score_id[j].first == score && id.compare(score_id[j].second) > 0) {
         score = score_id[j].first;
         id = score_id[j].second;
         selected_index = j;

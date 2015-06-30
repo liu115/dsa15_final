@@ -18,7 +18,7 @@ void Account::withdrawMoney(const int& money) {
     std::cout << "fail, " << _balance << " dollars only in current account\n";
   else {
     _balance -= money;
-    std::cout << "success, " << _balance << " left in current account\n";
+    std::cout << "success, " << _balance << " dollars left in current account\n";
   }
 }
 
