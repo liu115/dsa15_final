@@ -68,6 +68,29 @@ void BankRBTree::deleteAccount(const string& id, const string& passwd){
       cout << "wrong password\n";
 }
 
+std::string regex_change(const std::string& wildcard_ID){
+  std::string res = wildcard_ID;
+  std::string reg = "[a-zA-Z0-9]";
+  int pos = 0;
+  while(pos != -1){
+    pos = res.find("*", pos);
+    if(pos != -1){
+      res.insert(pos, reg);
+      pos += 12;
+    }
+  }
+  pos = 0;
+  while( pos != -1){
+    pos = res.find("?", pos);
+    if( pos != -1){
+      res.replace(pos, 1, reg);
+      pos += 11;
+    }
+  }
+  return res;
+}
+
+
 void BankRBTree::mergeAccount(const string& id1, const string& passwd1, const string& id2, const string& passwd2){
   string now_id1 = id1;
   DataNode la1 = DataNode(&now_id1, NULL);
@@ -128,7 +151,25 @@ void BankRBTree::transfer(const string& id, const int& money){
   }
 }
 
-void BankRBTree::findAccount(const string& rex_exp){
+void BankRBTree::findAccount(const string& reg_exp){
+  string id;
+  RecommendId vec;
+  std::regex reg(regex_change(reg_exp));
+  rb_traverser bank_traverser;
+  rb_t_init(&bank_traverser, rb_tree);
+  DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
+  while(res != NULL){
+    id = (*(res->first));
+    if (std::regex_match((*(res->first)), reg) && (*(res->first)) != current_login_user)
+      vec.push_back(*(res->first));
+    res = (DataNode*)rb_t_next(&bank_traverser);
+  }
+  if (vec.size() > 0) {
+    sort(vec.begin(), vec.end());
+    cout << vec[0];
+    for (int i = 1; i < vec.size(); ++i)
+      cout << "," << vec[i];
+  }
   cout << "\n";
 }
 
