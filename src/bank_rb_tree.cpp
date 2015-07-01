@@ -13,9 +13,11 @@ int word_compare(const void *pa, const void *pb, void *param){
 
 
 void BankRBTree::loginAccount(const string& id, const string& passwd){
+  //find account's position, if not exist return |NULL|
   string now_id = id;
   DataNode la = DataNode(&now_id, NULL);
   DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+  
   if(res == NULL)
     cout << "ID " << id << " not found\n";
   else{
@@ -29,16 +31,19 @@ void BankRBTree::loginAccount(const string& id, const string& passwd){
   }
 }
 
+
 void BankRBTree::createAccount(const string& id, const string& passwd){
+  //find account's position, if not exist return |NULL|
   string now_id = id;
   DataNode la = DataNode(&now_id, NULL);
   if(rb_find(rb_tree, &la) == NULL){
-    string* now_id = new string(id);
+    string* new_id = new string(id);
     Account* new_ac = new Account(id, passwd);
-    DataNode* data = new DataNode(now_id, new_ac);
+    DataNode* data = new DataNode(new_id, new_ac);
     rb_probe(rb_tree, data);
     cout << "success\n";
   }
+
   else{
     cout << "ID " << id << " exists, ";
     // recommend 10 best account
@@ -51,14 +56,16 @@ void BankRBTree::createAccount(const string& id, const string& passwd){
   }
 }
 
+
 void BankRBTree::deleteAccount(const string& id, const string& passwd){
-  //if(&rb_tree == NULL)
-    //cout << "ID " << id << " not found\n";
+  //find account's position, if not exist return |NULL|
   string now_id = id;
   DataNode la = DataNode(&now_id, NULL);
   DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+
   if(res == NULL)
     cout << "ID " << id << " not found\n";
+
   else
     if(res->second->verifyPassword(passwd) == true){
       rb_delete(rb_tree, res);
@@ -68,32 +75,42 @@ void BankRBTree::deleteAccount(const string& id, const string& passwd){
       cout << "wrong password\n";
 }
 
+
 void BankRBTree::mergeAccount(const string& id1, const string& passwd1, const string& id2, const string& passwd2){
+  //find account1's position, if not exist return |NULL|
   string now_id1 = id1;
   DataNode la1 = DataNode(&now_id1, NULL);
   DataNode* res1 = (DataNode*)rb_find(rb_tree, &la1);
-  string now_id2 = id2;
-  DataNode la2 = DataNode(&now_id2, NULL);
-  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
+
   if(res1 == NULL){
     cout << "ID " << id1 << " not found\n";
     return;
   }
+  //find account2's position, if not exist return |NULL|
+  string now_id2 = id2;
+  DataNode la2 = DataNode(&now_id2, NULL);
+  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
+  
   if(res2 == NULL){
     cout << "ID " << id2 << " not found\n";
     return;
   }
+  
+  //verify passwd1
   if(res1->second->verifyPassword(passwd1) == false){
     cout << "wrong password1\n";
     return;
   }
+  //verify passwd2
   if(res2->second->verifyPassword(passwd2) == false){
     cout << "wrong password2\n";
     return;
   }
+
   res1->second->mergeAccount(*(res2->second));
   rb_delete(rb_tree, res2);
 }
+
 
 void BankRBTree::accountDeposit(const int& money){
   DataNode la = DataNode(&current_login_user, NULL);
@@ -101,11 +118,38 @@ void BankRBTree::accountDeposit(const int& money){
   res->second->depositMoney(money);
 }
 
+
 void BankRBTree::accountWithdraw(const int& money){
   DataNode la = DataNode(&current_login_user, NULL);
   DataNode* res = (DataNode*)rb_find(rb_tree, &la);
   res->second->withdrawMoney(money);
 }
+
+
+void BankRBTree::transfer(const string& id, const int& money){
+  //find account2's position, if not exist return |NULL|
+  string now_id = id;
+  DataNode la2 = DataNode(&now_id, NULL);
+  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
+
+  if(res2 == NULL){
+    cout << "ID " << id << " not found, ";
+    RecommendId rid;
+    existRecommend(id, rid);
+    if(rid.size() > 0)
+      cout << rid[0];
+    for (int i = 1; i < rid.size(); ++i)
+      cout << "," << rid[i];
+    cout << "\n";
+  }
+
+  else{
+    DataNode la = DataNode(&current_login_user, NULL);
+    DataNode* res = (DataNode*)rb_find(rb_tree, &la);
+    res->second->transferOut((*(res2->second)), money, lg);
+  }
+}
+
 
 int wildcmp(const char *wild, const char *string) {
   // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
@@ -141,44 +185,23 @@ int wildcmp(const char *wild, const char *string) {
   return !*wild;
 }
 
-void BankRBTree::transfer(const string& id, const int& money){
-  string now_id = id;
-  DataNode la2 = DataNode(&now_id, NULL);
-  DataNode* res2 = (DataNode*)rb_find(rb_tree, &la2);
-  if(res2 == NULL){
-    cout << "ID " << id << " not found, ";
-    RecommendId rid;
-    existRecommend(id, rid);
-    if(rid.size() > 0)
-      cout << rid[0];
-    for (int i = 1; i < rid.size(); ++i)
-      cout << "," << rid[i];
-    cout << "\n";
-  }
-  else{
-    DataNode la = DataNode(&current_login_user, NULL);
-    DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-    res->second->transferOut((*(res2->second)), money, lg);
-  }
-}
 
 void BankRBTree::findAccount(const string& reg_exp){
   RecommendId vec;
   vec.clear();
+  //construct traverser
   rb_traverser bank_traverser;
   rb_t_init(&bank_traverser, rb_tree);
+  //traverse all rb_tree
   DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
-  //if(res == NULL)
-    //cout << "Fuck u c++ and dsa and rb_tree.";
   while(res != NULL){
-    //id = (*(res->first));
-    //cout << wildcmp((*(res->first)).c_str(),reg_exp.c_str());
     if (wildcmp(reg_exp.c_str(), (*(res->first)).c_str()) && (*(res->first)) != current_login_user){
       vec.push_back(*(res->first));
       cout << (*(res->first)) << "\n";
     }
     res = (DataNode*)rb_t_next(&bank_traverser);
   }
+
   if (vec.size() > 0) {
     sort(vec.begin(), vec.end());
     cout << vec[0];
@@ -188,6 +211,7 @@ void BankRBTree::findAccount(const string& reg_exp){
   cout << "\n";
 }
 
+
 void BankRBTree::searchHistory(const string& id){
   DataNode la = DataNode(&current_login_user, NULL);
   DataNode* res = (DataNode*)rb_find(rb_tree, &la);
@@ -195,12 +219,16 @@ void BankRBTree::searchHistory(const string& id){
   res->second->searchHistory(id);   
 }
 
+
 // following is for recommending accounts
 int BankRBTree::max_num(const int a, const int b) { return (a < b)?b:a;}
 
+
 int BankRBTree::min_num(const int a, const int b) { return (a < b)?a:b;}
 
+
 int BankRBTree::abs_num(const int a) { return (a < 0)?-a:a;}
+
 
 char BankRBTree::next_char(const char c) {
   char next_c = c + 1;
@@ -213,6 +241,7 @@ char BankRBTree::next_char(const char c) {
   return next_c;
 }
 
+
 char BankRBTree::prev_char(const char c) {
   char next_c = c - 1;
   if (next_c == 47) // if next_c is exceeding 0
@@ -224,6 +253,7 @@ char BankRBTree::prev_char(const char c) {
   return next_c;
 }
 
+
 int BankRBTree::computeScoring(const string& str1, const string& str2) {
   int score = 0, min_len = min_num(str1.length(), str2.length());
   for (int i = 0; i < min_len; i++) {
@@ -233,6 +263,7 @@ int BankRBTree::computeScoring(const string& str1, const string& str2) {
   score += delta * (delta + 1) / 2;
   return score;
 }
+
 
 void BankRBTree::getRecommend(const string& oid, RecommendId& rid) {
   rid.clear();
@@ -248,18 +279,19 @@ void BankRBTree::getRecommend(const string& oid, RecommendId& rid) {
   }
 }
 
+
 void BankRBTree::runRecommend(string id, string oid, int len, RecommendId& rid, int degree_c, int degree_a) {
   if (degree_c == 0 && degree_a == 0) {
     string now_id = id;
   DataNode la = DataNode(&now_id, NULL);
   DataNode* res = (DataNode*)rb_find(rb_tree, &la);
-    //Account* res = (Account*)rb_find(&rb_tree, &id);
     if (res == NULL) {
       // it means that the id isn't exist in the bank
       rid.push_back(id);
       return;
     }
   }
+
   string tmpid;
   int delta = abs_num((int)oid.length() - (int)id.length());
   if (degree_a > delta) {
@@ -275,6 +307,7 @@ void BankRBTree::runRecommend(string id, string oid, int len, RecommendId& rid, 
       runRecommend(tmpid, oid, len, rid, degree_c, degree_a - delta - 1);
     }
   }
+
   if (degree_c > 0) {
     for (int i = max_num(min_num(id.length(), oid.length()) - degree_c, len); i < min_num(oid.length(), id.length()); i++) {
       if (degree_c >= min_num(oid.length(), id.length()) - i) {
@@ -291,15 +324,17 @@ void BankRBTree::runRecommend(string id, string oid, int len, RecommendId& rid, 
   } 
 }
 
+
 void BankRBTree::existRecommend(const string& oid, RecommendId& id_container) {
   id_container.clear();
   id_container.reserve(10);
   vector< pair<int, string> > score_id;
-  //score_id.reserve(umap.size() + 1);
   int score;
   string id;
+  //construct traverser
   rb_traverser bank_traverser;
   rb_t_init(&bank_traverser, rb_tree);
+  //traverse all rb_tree
   DataNode* res = (DataNode*)rb_t_first(&bank_traverser, rb_tree);
   while(res != NULL){
     id = (*(res->first));
@@ -307,6 +342,7 @@ void BankRBTree::existRecommend(const string& oid, RecommendId& id_container) {
     score_id.push_back(make_pair(score, id));
     res = (DataNode*)rb_t_next(&bank_traverser);
   }
+
   int i = 0, j, selected_index;
   while (i < 10 && i < score_id.size()) {
     score = score_id[i].first;
