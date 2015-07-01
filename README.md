@@ -1,25 +1,34 @@
 # DSA_final
 
-CONTENTS OF THIS REPO
----------------------
+##CONTENTS OF THIS REPO
  * Introduction
  * Files
 
-INTRODUCTION
-------------
+##INTRODUCTION
+
 This repository is the final project of DSA for team 'em pleh esaelp'.
 
-FILE
--------
-This repo will include:
+##FILE
+This repo include:
  * Source Codes
  * report.pdf
 
 Caution: NO BINARY FILEs
 
-The report.pdf shoud include:
+##How To Compile
+
+The executable file, *final_project* will be put in the **/bin**.
+
+`make bank1` and the bank system is implemented with **unordered map**.
+
+`make bank2` and the bank system is implemented with **RB tree**.
+
+`make bank3` and the bank system is implemented with **Radix tree**.
+
+##REPORT
+The report.pdf include:
  * The team members’ names and school IDs
- * How you divide the responsibilities of the team members
+ * The responsibilities of the team members
  * The data structures you compared, including the results submitted to the mini-competition site
  * The data structure you recommend
  * The advantages of the recommendation
