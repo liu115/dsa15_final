@@ -100,6 +100,18 @@ void BankUMap::transfer(const string& id, const int& money) {
 }
 
 void BankUMap::findAccount(const string& reg_exp) {
+  RecommendId vec;
+  vec.clear();
+  for (UMap::iterator it = umap.begin(); it != umap.end(); ++it) {
+    if (wildcmp(reg_exp.c_str(), (it->first).c_str()) && (it->first) != current_login_user)  
+      vec.push_back(it->first);
+  }
+  if ((int)vec.size() > 0) {
+    sort(vec.begin(), vec.end());
+    cout << vec[0];
+    for (int i = 1; i < (int)vec.size(); ++i)
+      cout << "," << vec[i];
+  }
   cout << "\n";
 }
 
@@ -234,3 +246,38 @@ void BankUMap::existRecommend(const string& oid, RecommendId& id_container) {
     i++;
   }
 }
+
+int wildcmp(const char *wild, const char *string) {
+  // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
+  const char *cp = NULL, *mp = NULL;
+
+  while ((*string) && (*wild != '*')) {
+    if ((*wild != *string) && (*wild != '?')) {
+      return 0;
+    }
+    wild++;
+    string++;
+  }
+
+  while (*string) {
+    if (*wild == '*') {
+      if (!*++wild) {
+        return 1;
+      }
+      mp = wild;
+      cp = string+1;
+    } else if ((*wild == *string) || (*wild == '?')) {
+      wild++;
+      string++;
+    } else {
+      wild = mp;
+      string = cp++;
+    }
+  }
+
+  while (*wild == '*') {
+    wild++;
+  }
+  return !*wild;
+}
+
