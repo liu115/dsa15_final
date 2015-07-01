@@ -14,6 +14,7 @@ This repository is the final project of DSA for team 'em pleh esaelp'.
 This repo include:
  * Source Codes
  * README
+ * Makefile
  * report.pdf
 
 Caution: NO BINARY FILEs
@@ -27,6 +28,8 @@ The executable file, *final_project* will be put in the **/bin**.
 `make bank2` and the bank system is implemented with **RB tree**.
 
 `make bank3` and the bank system is implemented with **Radix tree**.
+
+`make run` will execute the `bin/final_project`.
 
 `make clean` will remove all the object files.
 
