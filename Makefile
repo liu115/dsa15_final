@@ -4,39 +4,39 @@
 CC=g++
 CFLAGS=-std=c++11 -O2 -Wall
 
-TAR_ACCOUNT=account/account.cpp
+TAR_ACCOUNT=src/account/account.cpp
 OBJ_ACCOUNT=account.o
 
-TAR_MD5=account/encoder/md5.cpp
+TAR_MD5=src/account/encoder/md5.cpp
 OBJ_MD5=md5.o
 
-TAR_SHA=account/encoder/sha256.cpp
+TAR_SHA=src/account/encoder/sha256.cpp
 OBJ_SHA=sha256.o
 
-TAR_HASH=account/MurmurHash3.cpp
+TAR_HASH=src/account/MurmurHash3.cpp
 OBJ_HASH=MurmurHash3.o
 
-TAR_RB=rb.c
+TAR_RB=src/rb.c
 OBJ_RB=rb.o
 
-TAR_MURMUR=account/encoder/murmurhash.c
+TAR_MURMUR=src/account/encoder/murmurhash.c
 OBJ_MURMUR=murmurhash.o
 
-TAR_BANK_UMAP=bank_unordered_map.cpp
+TAR_BANK_UMAP=src/bank_unordered_map.cpp
 OBJ_BANK_UMAP=bank_unordered_map.o
 
-TAR_BANK_RBT=bank_rb_tree.cpp
+TAR_BANK_RBT=src/bank_rb_tree.cpp
 OBJ_BANK_RBT=bank_rb_tree.o
 
-TAR_BANK_TRIE=bank_trie.cpp
+TAR_BANK_TRIE=src/bank_trie.cpp
 OBJ_BANK_TRIE=bank_trie.o
 
-TAR_BANK_MUR=bank_unordered_map_murmur.cpp
+TAR_BANK_MUR=src/bank_unordered_map_murmur.cpp
 OBJ_BANK_MUR=bank_unordered_map_murmur.o
 
-MAIN=main.cpp
+MAIN=src/main.cpp
 
-RESULT=final_project
+RESULT=bin/final_project
 
 all: bank1
 
@@ -70,19 +70,19 @@ $(OBJ_BANK_MUR): $(TAR_BANK_MUR)
 	$(CC) $(CFLAGS) -c $(TAR_BANK_MUR)
 
 bank1: $(MAIN) $(OBJ_BANK_UMAP) obj
-	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
+	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_UMAP) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o $(RESULT)
 
 bank2: $(MAIN) $(OBJ_BANK_RBT) obj $(OBJ_RB)
-	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(OBJ_RB) $(MAIN) -o final_project
+	$(CC) $(CFLAGS) -DBANK_RB $(OBJ_BANK_RBT) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(OBJ_RB) $(MAIN) -o $(RESULT)
 
 bank3: $(MAIN) $(OBJ_BANK_TRIE) obj
-	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
+	$(CC) $(CFLAGS) -DBANK_TR $(OBJ_BANK_TRIE) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o $(RESULT)
 
 bank4: $(MAIN) $(OBJ_BANK_MUR) $(OBJ_MURMUR) obj
-	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_MUR) $(OBJ_MURMUR) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o final_project
+	$(CC) $(CFLAGS) -DBANK_UM $(OBJ_BANK_MUR) $(OBJ_MURMUR) $(OBJ_ACCOUNT) $(OBJ_MD5) $(OBJ_SHA) $(MAIN) -o $(RESULT)
 
-run1:
-	./final_project
+run:
+	./$(RESULT)
 
 clean:
-	rm -rf account.o md5.o sha256.o murmurhash.o bank_unordered_map.o bank_rb_tree.o bank_trie.o bank_unordered_map_murmur.o rb.o final_project
+	rm -rf *.o $(RESULT)
