@@ -1,9 +1,0 @@
-success
-success
-success
-ID g1 exists, g,g0,g10,g11,g12,g13,g14,g15,g16,g17
-success
-success, 5000 dollars in current account
-
-success, 2501 dollars left in current account
-To aabb 2499
